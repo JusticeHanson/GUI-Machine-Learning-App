@@ -62,7 +62,7 @@ def main():
                     #activate virtual environment
                     venv/Scripts/activate
 
-                    streamlit run 00_🏠_Home.py
+                    streamlit run app.py
                     """, language="python")
 
         # Machine Learning Integration
