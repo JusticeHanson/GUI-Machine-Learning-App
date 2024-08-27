@@ -1,7 +1,5 @@
-# Import necassary libraries
+# Import necessary libraries
 import streamlit as st
-from login import login_user
-
 
 # Configure the page
 st.set_page_config(
@@ -11,25 +9,29 @@ st.set_page_config(
     initial_sidebar_state='auto'
 )
 
-    # --------- Add custom CSS to adjust the width of the sidebar
-st.markdown( """ <style> 
-        section[data-testid="stSidebar"]
-        { width: 200px !important;
+# Add custom CSS to adjust the width of the sidebar
+st.markdown("""
+    <style> 
+        section[data-testid="stSidebar"] {
+            width: 200px !important;
         }
-        </style> """,
-        unsafe_allow_html=True,
-)
-
+    </style> 
+""", unsafe_allow_html=True)
 
 def main():
-    login_user()
+    # Placeholder for authentication check
+    # You can replace this with your actual authentication logic
+    if 'authentication_status' not in st.session_state:
+        st.session_state['authentication_status'] = False
+    if 'name' not in st.session_state:
+        st.session_state['name'] = 'Guest'
 
-    if st.session_state["authentication_status"] == True:
-
+    if st.session_state['authentication_status']:
         st.write(f'Welcome *{st.session_state["name"]}*')
         st.header('Customer Churn Prediction App.')
 
         cols = st.columns(2)
+
         # Churn Prediction Status
         with cols[0]:
             st.subheader('Churn Prediction Status')
@@ -39,31 +41,32 @@ def main():
         with cols[0]:
             st.subheader('Application Features')
             st.markdown("""                
-            * Data View - View proprietory data
-            * Dashboard - Shows EDA and KPIs with other analytical questions
-            * Predict - Allows user to predict churn status from two available models
-            * History - Displays all previous predictions made using the app
+                * Data View - View proprietary data
+                * Dashboard - Shows EDA and KPIs with other analytical questions
+                * Predict - Allows user to predict churn status from two available models
+                * History - Displays all previous predictions made using the app
             """)
 
         # Key Advantages
         with cols[0]:
             st.subheader('Key Advantages')
             st.markdown("""
-                        Discover the advantages of using this Churn Prediction App, such as;
-                        * Accurate predictions
-                        * User-friendly interface
-                        """)
+                Discover the advantages of using this Churn Prediction App, such as:
+                * Accurate predictions
+                * User-friendly interface
+            """)
 
         # How to run the app
         with cols[1]:
             st.subheader('How to Run the App')
             st.write("Follow the steps to run the Customer Churn Prediction App and make accurate predictions for customer churn.")
             st.code("""
-                    #activate virtual environment
-                    venv/Scripts/activate
+                # Activate virtual environment
+                venv/Scripts/activate
 
-                    streamlit run app.py
-                    """, language="python")
+                # Run the Streamlit app
+                streamlit run app.py
+            """, language="python")
 
         # Machine Learning Integration
         with cols[1]:
@@ -73,17 +76,16 @@ def main():
         # Need Assistance
         with cols[1]:
             st.subheader('Need Assistance?')
-            st.write("If you need any assistance or have questions, feel free to reach out. Email: princeekow4@gmail.com")
+            st.write("If you need any assistance or have questions, feel free to reach out. Email: just.hanson1@gmail.com")
             cols = st.columns(4)
             with cols[0]:
-                st.link_button(":red[GitHub]", "https://github.com/JusticeHanson/GUI-Machine-Learning-App.git",)
+                st.button("GitHub", url="https://github.com/JusticeHanson/GUI-Machine-Learning-App.git")
             with cols[1]:
-                st.link_button(":red[LinkedIn]", "http://www.linkedin.com/in/justtice-hanson")
-            
+                st.button("LinkedIn", url="http://www.linkedin.com/in/justice-hanson")
 
+    else:
+        st.write("You need to log in to access this page.")
+        st.write("Please contact support for login details.")
 
-
-
-
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
