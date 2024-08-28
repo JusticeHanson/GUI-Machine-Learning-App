@@ -11,12 +11,13 @@ st.set_page_config(
 )
 
 # --------- Add custom CSS to adjust the width of the sidebar
-st.markdown( """ <style> 
-            section[data-testid="stSidebar"]
-            { width: 200px !important;
-            }
-            </style> """,
-            unsafe_allow_html=True,
+st.markdown("""
+    <style> 
+    section[data-testid="stSidebar"] {
+        width: 200px !important;
+    }
+    </style> 
+    """, unsafe_allow_html=True,
 )
 
 def dashboard_page():
@@ -59,8 +60,9 @@ def dashboard_page():
     def kpi_viz():
         st.subheader('KPIs Dashboard')
         st.markdown('---')
-        cols = st.columns(5)
+        cols = st.columns(6)
         st.markdown('---')
+
         # ------- Grand Total Charges
         with cols[0]:
             grand_tc = df['TotalCharges'].sum()
@@ -79,12 +81,53 @@ def dashboard_page():
         # ------- Churned Customers
         with cols[3]:
             churned = len(df.loc[df['Churn'] == 1])
-            ui.metric_card(title="Churn", content=f"{churned}", key="card4")
+            ui.metric_card(title="Churned Customers", content=f"{churned}", key="card4")
         
         # ------ Total Customers
         with cols[4]:
-            total_customers = df['customerID'].count()
+            total_customers = df.shape[0]
             ui.metric_card(title="Total Customers", content=f"{total_customers}", key="card5")
+        
+        # ------ Percentage of Customers with Dependents
+        with cols[5]:
+            pct_dependents = df['Dependents'].mean() * 100
+            ui.metric_card(title="Customers with Dependents (%)", content=f"{'{:.2f}'.format(pct_dependents)}%", key="card6")
+
+        st.markdown('---')
+        cols2 = st.columns(6)
+        st.markdown('---')
+
+        # ------- Average Monthly Charges per Customer
+        with cols2[0]:
+            avg_mc_per_customer = df['MonthlyCharges'].mean()
+            ui.metric_card(title="Avg MonthlyCharges per Customer", content=f"{'{:,.2f}'.format(avg_mc_per_customer)}", key="card7")
+
+        # ------- Churn Rate
+        with cols2[1]:
+            churn_rate = (df['Churn'].mean()) * 100
+            ui.metric_card(title="Churn Rate (%)", content=f"{'{:.2f}'.format(churn_rate)}%", key="card8")
+
+        # ------- Total Dependents
+        with cols2[2]:
+            total_dependents = df['Dependents'].sum()
+            ui.metric_card(title="Total Dependents", content=f"{total_dependents}", key="card9")
+        
+        # ------- Percentage of Customers with Multiple Lines
+        with cols2[3]:
+            pct_multiple_lines = df['MultipleLines'].apply(lambda x: 1 if x == 'Yes' else 0).mean() * 100
+            ui.metric_card(title="Customers with Multiple Lines (%)", content=f"{'{:.2f}'.format(pct_multiple_lines)}%", key="card10")
+        
+        # ------- Average Total Charges
+        with cols2[4]:
+            avg_total_charges = df['TotalCharges'].mean()
+            ui.metric_card(title="Average TotalCharges", content=f"{'{:,.2f}'.format(avg_total_charges)}", key="card11")
+
+        # ------- Gender Distribution
+        with cols2[5]:
+            male_customers = df[df['gender'] == 'Male'].shape[0]
+            female_customers = df[df['gender'] == 'Female'].shape[0]
+            gender_distribution = f"Male: {male_customers}, Female: {female_customers}"
+            ui.metric_card(title="Gender Distribution", content=gender_distribution, key="card12")
 
     def analytical_ques_viz():
         # ------ Answer Analytical Question 1
