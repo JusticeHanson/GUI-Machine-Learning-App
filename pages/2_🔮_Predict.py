@@ -74,7 +74,6 @@ class TotalCharges_cleaner(BaseEstimator, TransformerMixin):
         X['TotalCharges'] = X['TotalCharges'].astype(float)
         return X
         
-    # Serialization methods
     def __getstate__(self):
         return {}
 
@@ -166,39 +165,63 @@ def input_features():
         # ------ Collect customer information
         with col1:
             st.subheader('Demographics')
-            st.text_input('Customer ID', value="", placeholder='eg. 1234-ABCDE', key='customer_id')
-            st.radio('Gender', options=['Male', 'Female'], horizontal=True, key='gender')
-            st.radio('Partners', options=['Yes', 'No'], horizontal=True, key='partners')
-            st.radio('Dependents', options=['Yes', 'No'], horizontal=True, key='dependents')
-            st.radio("Senior Citizen ('Yes-1, No-0')", options=[1, 0], horizontal=True, key='senior_citizen')
+            customer_id = st.text_input('Customer ID', value="", placeholder='eg. 1234-ABCDE')
+            gender = st.radio('Gender', options=['Male', 'Female'], horizontal=True)
+            partners = st.radio('Partners', options=['Yes', 'No'], horizontal=True)
+            dependents = st.radio('Dependents', options=['Yes', 'No'], horizontal=True)
+            senior_citizen = st.radio("Senior Citizen ('Yes-1, No-0')", options=[1, 0], horizontal=True)
             
         # ------ Collect customer account information
         with col1:
             st.subheader('Customer Account Info.')
-            st.number_input('Tenure', min_value=0, max_value=70, key='tenure')
-            st.selectbox('Contract', options=['Month-to-month', 'One year', 'Two year'], key='contract')
-            st.selectbox('Payment Method',
-                         options=['Electronic check', 'Mailed check', 'Bank transfer (automatic)', 'Credit card (automatic)'],
-                         key='payment_method')
-            st.radio('Paperless Billing', ['Yes', 'No'], horizontal=True, key='paperless_billing')
-            st.number_input('Monthly Charges', placeholder='Enter amount...', key='monthly_charges')
-            st.number_input('Total Charges', placeholder='Enter amount...', key='total_charges')
+            tenure = st.number_input('Tenure', min_value=0, max_value=70)
+            contract = st.selectbox('Contract', options=['Month-to-month', 'One year', 'Two year'])
+            payment_method = st.selectbox('Payment Method',
+                                          options=['Electronic check', 'Mailed check', 'Bank transfer (automatic)', 'Credit card (automatic)'])
+            paperless_billing = st.radio('Paperless Billing', ['Yes', 'No'], horizontal=True)
+            monthly_charges = st.number_input('Monthly Charges', placeholder='Enter amount...')
+            total_charges = st.number_input('Total Charges', placeholder='Enter amount...')
             
         # ------ Collect customer subscription information
         with col2:
             st.subheader('Subscriptions')
-            st.radio('Phone Service', ['Yes', 'No'], horizontal=True, key='phone_service')
-            st.selectbox('Multiple Lines', ['Yes', 'No', 'No internet service'], key='multiple_lines')
-            st.selectbox('Internet Service', ['DSL', 'Fiber optic', 'No'], key='internet_service')
-            st.selectbox('Online Security', ['Yes', 'No', 'No internet service'], key='online_security')
-            st.selectbox('Online Backup', ['Yes', 'No', 'No internet service'], key='online_backup')
-            st.selectbox('Device Protection', ['Yes', 'No', 'No internet service'], key='device_protection')
-            st.selectbox('Tech Support', ['Yes', 'No', 'No internet service'], key='tech_support')
-            st.selectbox('Streaming TV', ['Yes', 'No', 'No internet service'], key='streaming_tv')
-            st.selectbox('Streaming Movies', ['Yes', 'No', 'No internet service'], key='streaming_movies')
+            phone_service = st.radio('Phone Service', ['Yes', 'No'], horizontal=True)
+            multiple_lines = st.selectbox('Multiple Lines', ['Yes', 'No', 'No internet service'])
+            internet_service = st.selectbox('Internet Service', ['DSL', 'Fiber optic', 'No'])
+            online_security = st.selectbox('Online Security', ['Yes', 'No', 'No internet service'])
+            online_backup = st.selectbox('Online Backup', ['Yes', 'No', 'No internet service'])
+            device_protection = st.selectbox('Device Protection', ['Yes', 'No', 'No internet service'])
+            tech_support = st.selectbox('Tech Support', ['Yes', 'No', 'No internet service'])
+            streaming_tv = st.selectbox('Streaming TV', ['Yes', 'No', 'No internet service'])
+            streaming_movies = st.selectbox('Streaming Movies', ['Yes', 'No', 'No internet service'])
 
         # Add the submit button
-        submit_button = st.form_submit_button('Predict', on_click=make_prediction, kwargs=dict(model=model_pipeline, encoder=encoder))
+        submitted = st.form_submit_button('Predict')
+        if submitted:
+            st.session_state['customer_id'] = customer_id
+            st.session_state['gender'] = gender
+            st.session_state['senior_citizen'] = senior_citizen
+            st.session_state['partners'] = partners
+            st.session_state['dependents'] = dependents
+            st.session_state['tenure'] = tenure
+            st.session_state['phone_service'] = phone_service
+            st.session_state['multiple_lines'] = multiple_lines
+            st.session_state['internet_service'] = internet_service
+            st.session_state['online_security'] = online_security
+            st.session_state['online_backup'] = online_backup
+            st.session_state['device_protection'] = device_protection
+            st.session_state['tech_support'] = tech_support
+            st.session_state['streaming_tv'] = streaming_tv
+            st.session_state['streaming_movies'] = streaming_movies
+            st.session_state['contract'] = contract
+            st.session_state['paperless_billing'] = paperless_billing
+            st.session_state['payment_method'] = payment_method
+            st.session_state['monthly_charges'] = monthly_charges
+            st.session_state['total_charges'] = total_charges
+            
+            # Make the prediction
+            make_prediction(model_pipeline, encoder)
+
     return True
 
 if __name__ == '__main__':
