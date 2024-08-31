@@ -48,7 +48,7 @@ In order to run this project you need:
 
 Clone this repository to your desired folder:
 - cd desired-folder
-git clone https://github.com/pk-aduyaw/ML-Embedding-in-GUI.git
+git clone https://github.com/JusticeHanson/GUI-Machine-Learning-App
 
 # Change into the cloned repository:
 
