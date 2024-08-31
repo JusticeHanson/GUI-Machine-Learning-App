@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from login import login_user
-
 
 # Configure the page
 st.set_page_config(
@@ -10,7 +8,6 @@ st.set_page_config(
     page_icon='👨‍💻',
     layout='wide'
 )
-
 
 # --------- Add custom CSS to adjust the width of the sidebar
 st.markdown( """ <style> 
@@ -22,86 +19,81 @@ st.markdown( """ <style>
 )
 
 def data_page():
+    # Set header for dataset view
+    st.title('Dataset View')
 
-    login_user()
-    if st.session_state["authentication_status"] == True:
+    # Create selection option
+    column1, column2 = st.columns(2)
+    with column2:
+        option = st.selectbox('Choose columns to be viewed',
+                              ('All Columns', 'Numeric Columns', 'Categorical Columns'))
 
-        # Set header for dataset view
-        st.title('Dataset View')
+    # ---- Load remote dataset
+    @st.cache_data(show_spinner='Loading data')
+    def load_data():
+        df = pd.read_csv('C:\\Users\\HP ELITEBOOK 830 G5\\OneDrive\\Desktop\\Home Office\\Azubi Project\\GUI-Machine-Learning-App\\data\\dataset.csv')
+        return df
 
-            # Create selection option
-        column1, column2 = st.columns(2)
-        with column2:
-                    option = st.selectbox('Choose columns to be viewed',
-                                        ('All Columns','Numeric Columns','Categorical Columns'))
+    df = load_data().head(100)
 
-            # ---- Load remote dataset
-        @st.cache_data(show_spinner='Loading data')
-        def load_data():
-            df = pd.read_csv('C:\\Users\\HP ELITEBOOK 830 G5\\OneDrive\\Desktop\\Home Office\\Azubi Project\\GUI-Machine-Learning-App\\data\\dataset.csv')
-            return df
+    # Display based on selection
+    if option == 'Numeric Columns':
+        st.subheader('Numeric Columns')
+        st.write(df.select_dtypes(include='number'))
 
-        df = load_data().head(100)
+    elif option == 'Categorical Columns':
+        st.subheader('Categorical Columns')
+        st.write(df.select_dtypes(include='object'))
 
-            # Display based on selection
-        if option == 'Numeric Columns':
-            st.subheader('Numeric Columns')
-            st.write(df.select_dtypes(include='number'))
+    else:
+        st.subheader('Complete Dataset')
+        st.write(df)
 
-        elif option == 'Categorical Columns':
-            st.subheader('Categorical Columns')
-            st.write(df.select_dtypes(include='object'))
+    # ----- Add column descriptions of the dataset
+    with st.expander('**Click to view column description**'):
+        st.markdown('''
+            :gray[**The following describes the columns present in the data.**]
 
-        else:
-            st.subheader('Complete Dataset')
-            st.write(df)
+        **Gender** -- Whether the customer is a male or a female
 
+        **SeniorCitizen** -- Whether a customer is a senior citizen or not
 
-            # ----- Add column descriptions of the dataset
-        with st.expander('**Click to view column description**'):
-            st.markdown('''
-                :gray[**The following describes the columns present in the data.**]
+        **Partner** -- Whether the customer has a partner or not (Yes, No)
 
-            **Gender** -- Whether the customer is a male or a female
+        **Dependents** -- Whether the customer has dependents or not (Yes, No)
 
-            **SeniorCitizen** -- Whether a customer is a senior citizen or not
+        **Tenure** -- Number of months the customer has stayed with the company
 
-            **Partner** -- Whether the customer has a partner or not (Yes, No)
+        **Phone Service** -- Whether the customer has a phone service or not (Yes, No)
 
-            **Dependents** -- Whether the customer has dependents or not (Yes, No)
+        **MultipleLines** -- Whether the customer has multiple lines or not
 
-            **Tenure** -- Number of months the customer has stayed with the company
+        **InternetService** -- Customer's internet service provider (DSL, Fiber Optic, No)
 
-            **Phone Service** -- Whether the customer has a phone service or not (Yes, No)
+        **OnlineSecurity** -- Whether the customer has online security or not (Yes, No, No Internet)
 
-            **MultipleLines** -- Whether the customer has multiple lines or not
+        **OnlineBackup** -- Whether the customer has online backup or not (Yes, No, No Internet)
 
-            **InternetService** -- Customer's internet service provider (DSL, Fiber Optic, No)
+        **DeviceProtection** -- Whether the customer has device protection or not (Yes, No, No internet service)
 
-            **OnlineSecurity** -- Whether the customer has online security or not (Yes, No, No Internet)
+        **TechSupport** -- Whether the customer has tech support or not (Yes, No, No internet)
 
-            **OnlineBackup** -- Whether the customer has online backup or not (Yes, No, No Internet)
+        **StreamingTV** -- Whether the customer has streaming TV or not (Yes, No, No internet service)
 
-            **DeviceProtection** -- Whether the customer has device protection or not (Yes, No, No internet service)
+        **StreamingMovies** -- Whether the customer has streaming movies or not (Yes, No, No Internet service)
 
-            **TechSupport** -- Whether the customer has tech support or not (Yes, No, No internet)
+        **Contract** -- The contract term of the customer (Month-to-Month, One year, Two year)
 
-            **StreamingTV** -- Whether the customer has streaming TV or not (Yes, No, No internet service)
+        **PaperlessBilling** -- Whether the customer has paperless billing or not (Yes, No)
 
-            **StreamingMovies** -- Whether the customer has streaming movies or not (Yes, No, No Internet service)
+        **Payment Method** -- The customer's payment method (Electronic check, mailed check, Bank transfer(automatic), Credit card(automatic))
 
-            **Contract** -- The contract term of the customer (Month-to-Month, One year, Two year)
+        **MonthlyCharges** -- The amount charged to the customer monthly
 
-            **PaperlessBilling** -- Whether the customer has paperless billing or not (Yes, No)
+        **TotalCharges** -- The total amount charged to the customer
 
-            **Payment Method** -- The customer's payment method (Electronic check, mailed check, Bank transfer(automatic), Credit card(automatic))
+        **Churn** -- Whether the customer churned or not (Yes or No)
+        ''')
 
-            **MonthlyCharges** -- The amount charged to the customer monthly
-
-            **TotalCharges** -- The total amount charged to the customer
-
-            **Churn** -- Whether the customer churned or not (Yes or No)
-            ''')
-             
 if __name__ == '__main__':
     data_page()
