@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from io import BytesIO
-import requests
 import joblib
 import os
 
@@ -26,31 +25,25 @@ column1, column2 = st.columns([.6, .4])
 with column1:
     model_option = st.selectbox('Choose which model to use for prediction', options=['Gradient Boosting', 'Support Vector'])
 
-# Load trained machine learning model and encoder from GitHub
-github_model1_url = 'https://raw.githubusercontent.com/richmond-yeboah/Telecom-Customer-Churn-Prediction/main/model/GradientBoosting.joblib'
-github_model2_url = 'https://raw.githubusercontent.com/richmond-yeboah/Telecom-Customer-Churn-Prediction/main/model/SupportVector.joblib'
-encoder_url = 'https://raw.githubusercontent.com/richmond-yeboah/Telecom-Customer-Churn-Prediction/main/model/label_encoder.joblib'
+# Define file paths
+local_model1_path = 'model/GradientBoosting.joblib'
+local_model2_path = 'model/SupportVector.joblib'
+local_encoder_path = 'model/label_encoder.joblib'
 
-# -------- Function to load the model from GitHub
+# -------- Function to load the model from local files
 @st.cache_resource(show_spinner="Loading model")
 def gb_pipeline():
-    response = requests.get(github_model1_url)
-    model_bytes = BytesIO(response.content)
-    pipeline = joblib.load(model_bytes)
-    return pipeline
+    model = joblib.load(local_model1_path)
+    return model
 
 @st.cache_resource(show_spinner="Loading model")
 def sv_pipeline():
-    response = requests.get(github_model2_url)
-    model_bytes = BytesIO(response.content)
-    pipeline = joblib.load(model_bytes)
-    return pipeline
+    model = joblib.load(local_model2_path)
+    return model
 
-# --------- Function to load encoder from GitHub
+# --------- Function to load encoder from local files
 def load_encoder():
-    response = requests.get(encoder_url)
-    encoder_bytes = BytesIO(response.content)
-    encoder = joblib.load(encoder_bytes)
+    encoder = joblib.load(local_encoder_path)
     return encoder
 
 # --------- Create a function for model selection
